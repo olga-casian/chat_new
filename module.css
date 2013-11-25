@@ -1,0 +1,101 @@
+@import url("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css");
+@import url("../../themes/default/styles.css");
+@import url("peek_xmpp_console.css");
+
+
+/*===================================================MAIN====================================================================*/
+#chat {min-width: 600px; max-width:1200px;}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {font-weight: bold;}
+#log {color: #f00; padding-left:20px;}
+#buttonbar {width: 1420px;}
+
+
+/*===================================================COMMON==================================================================*/
+#inbox_list, .conversations {padding:0px !important; margin:0px !important;}
+.conversations_item, .inbox_list_item, .inbox_list_item_checked { width:auto; text-align:left; border-top:1px solid #c3c3c3; list-style-type:none;}
+.conversations_item a:hover, .inbox_list_name a:hover {text-decoration:underline; background-color:transparent;}
+.conversations table, #inbox_list table {width:100%; padding:5px; }
+.conversations_middle, .inbox_list_middle {padding:0 15px;}
+.conversations li:last-child, #inbox_list li:last-child, #settings .settings_category  {border-bottom:1px solid #c3c3c3;}
+.conversations_send, .conversations_leave_muc, #settings_blacklist_upd, #settings_save, #friends_selected_bnt {margin:0 15px; 
+	padding:2px 10px; width:60px; margin-bottom:2px;}
+.friends_column_wrapper, .friends_column_wrapper_classmates, .friends_column_wrapper_classmates_me {margin:5px; cursor: pointer;}
+
+
+/*===================================================INBOX LIST==============================================================*/
+#inbox_list {overflow:auto; height:466px;}
+#inbox_list td {border: 0px !important;}
+#inbox_list td:first-child {vertical-align: top;}
+.inbox_list_item table, .inbox_list_item_checked table {margin:0px;}
+.inbox_list_item table td:first-child, .inbox_list_item_checked table td:first-child {width:60px; padding-left:20px;}
+.inbox_list_item:hover, .inbox_list_item_checked:hover { background-color:#F2F2F2;}
+.inbox_list_item_new { background-color:#F2F7F7;}
+.inbox_list_info {color:#000;}
+/*.inbox_list_info a:link, .inbox_list_info a:link, a:visited {color:#000;}*/
+div.course div.shortcuts, a {text-align: left;}
+#inbox_list .picture { border:1px solid #c3c3c3; height:50px; width:50px; margin: 5px;}
+.inbox_list_name { font-size:1.1em; }
+.inbox_list_time {float:right; margin-right:10px; color:#555; margin:15px 25px 0 0;;}
+.inbox_list_item {cursor:pointer;}
+#inbox_notification {text-align: center;}
+
+
+/*===================================================CONVERSATIONS============================================================*/
+#subtabs .picture, .pic_square { border:1px solid #c3c3c3; height:30px; width:30px; margin: 0px;}
+.conversations_name {padding-top:10px; font-weight: bold;}
+#subtabs td {vertical-align:top; border:transparent;}
+#subtabs hr {background-color:#c3c3c3; border:0px; margin:0px;}
+.conversations_middle {padding-top:2px; width: 100%;}
+.conversations_picture {padding:5px 0 5px 15px; width:32px;}
+.conversations_textarea {padding:5px !important; border-color:#c3c3c3; margin-bottom:15px; width:100%; resize:vertical; height:50px;}
+.conversations_time {float: right; padding:6px 15px 0 0; color:#555; font-size:0.8em;}
+.conversations_table {padding:0px !important; border:0px !important; background:#ECECEC; width:100%;}
+.conversations_table td { padding:0px !important; }
+.conversations_table td:last-child {padding:15px 14px 0 10px !important; width:10%; vertical-align:top;}
+.conversations_table_spacer {width:61px;}
+.conversations_table_button input {cursor:pointer;}
+#tabs { margin-top: 1em; }
+#tabs li .ui-icon-close, #tabs li .ui-icon-minus { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+.conversation_tab_wrap {display:inline-table;}
+.chat_messages {overflow:auto; height:300px;}
+.chat_event {height:15px; font-style:italic; font-size:0.8em;}
+.muc_roster {float:right; margin:-300px 0px 0 0; background-color:#ECECEC; height:300px; overflow:auto;}
+.muc_roster ul {list-style:none; padding:5px;}
+.muc_roster li {padding:5px; background-color:#eee; border: 1px solid #C3C3C3; margin:2px 0;}
+.muc_roster .joined {padding:5px; background-color:white; border: 1px solid #C3C3C3; margin:2px 0;}
+.notice {padding:5px 0 5px 65px; color:#555;; font-size:0.8em;}
+
+
+/*===================================================FRIENDS==================================================================*/
+#friends table {border-spacing:0px !important;}
+.friends_item {width:100%; background:#ffffff; border:1px solid #c3c3c3;}
+.friends_item td:first-child {width:41px;}
+.friends_item_picture {border:1px solid #c3c3c3; height:30px; width:30px; margin:5px 5px 5px 10px !important;}
+#friends h2 {font-size:1.1em; padding-left:5px;}
+#friends td {vertical-align:top; border:1px solid #c3c3c3; background-color:#ECECEC; margin-left:15px;}
+#friends .friends_item td {border:none; background-color:#fff; vertical-align:middle;}
+#friends .friends_item_name {font-size:0.85em; color:#1A4A72; font-weight:bold;}
+.friends_spacer {width:0.5%; background-color:#fff !important; border:1px solid #fff !important;}
+#friends_selected {text-align: center; padding-top:30px;}
+#friends_selected #groupname {font-size:0.9em; width:176px; color:#555; padding:2px; margin-top:5px;}
+#friends_selected span, #friends_selected {font-size:1.1em; color:#1A4A72;}
+#friends_selected_bnt {font-size:0.9em; width:180px; margin:5px 0 15px 0;}
+#friends_selected_label {margin:15px 0 0 0; font-size:0.8em; color:#555;}
+#friends .friends_item {padding:2px;}
+.friends_column_wrapper_classmates_me{cursor:auto; border:1px solid #BBB;}
+
+
+/*===================================================SETTINGS=================================================================*/
+.settings_category input {margin:0 3px 0 15px !important;}
+.settings_category {padding-top:20px; margin-bottom:5px; color:#555;}
+#settings_blacklist {padding:5px !important; border-color:#c3c3c3; margin:15px 0; width:300px; resize:vertical;}
+#settings_table {border-spacing:0px !important;}
+#settings_table td {vertical-align:top; border:none; padding:0px;}
+#settings_blacklist_upd {margin-top:15px;}
+.settings_category {padding-bottom:3px; color:#555;}
+#settings_save {margin:10px 0 !important;}
+.settings_category a:hover, .settings_category a:focus {background-color:transparent;}
+.settings_details {cursor:pointer; margin-bottom:-3px;}
+#settings_save {width: auto;}
+
+

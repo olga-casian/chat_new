@@ -1,0 +1,9 @@
+.friends_item {width:100%; background:#ffffff; border:1px solid #c3c3c3;}
+.friends_item td:first-child {width:41px;}
+.friends_item_picture {border:1px solid #c3c3c3; height:30px; width:30px; margin:2px 2px 2px 5px !important;}
+#friends td {vertical-align:top; border:1px solid #c3c3c3; background-color:#ECECEC; margin-left:15px;}
+#friends .friends_item td {border:none; background-color:#fff; vertical-align:middle;}
+.friends_column_wrapper {margin:2px; cursor: pointer;}
+#roster .friends_item_name {font-size:1em; color:#1A4A72; font-weight:bold;}
+#roster .friends_item_status {font-size:1em; color:#CCC; float:right; padding-right:5px; padding-top: 13px;}
+.me {cursor:auto; border: 1px solid #bbb;}
