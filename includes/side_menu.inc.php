@@ -3,28 +3,28 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $_base_path, $include_all, $include_one, $stripslashes;
 global $savant;
 	
-$sql = "SELECT C.member_id, jid, first_name, last_name FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."course_enrollment E USING (member_id) INNER JOIN ".TABLE_PREFIX."members M
-	WHERE E.course_id=$_SESSION[course_id]
+$sql = "SELECT C.member_id, jid, first_name, last_name FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
+	WHERE E.course_id=%d
 	AND E.approved='y'
 	AND E.member_id=M.member_id
-	AND E.member_id IN (SELECT member_id FROM ".TABLE_PREFIX."users_online)
+	AND E.member_id IN (SELECT member_id FROM %susers_online)
 	ORDER BY first_name ASC";
-$result = mysql_query($sql, $db);
+$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $_SESSION[course_id], TABLE_PREFIX));
 $course_participants_online = array();
-while ($row = mysql_fetch_assoc($result)) {
+foreach ($result as $row) {
 	$current = array($row['jid'], $row['member_id'], $row['first_name'], $row['last_name']);
 	$course_participants_online[] = $current;
 }
 
-$sql = "SELECT C.member_id, jid, first_name, last_name FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."course_enrollment E USING (member_id) INNER JOIN ".TABLE_PREFIX."members M
-	WHERE E.course_id=$_SESSION[course_id]
+$sql = "SELECT C.member_id, jid, first_name, last_name FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
+	WHERE E.course_id=%d
 	AND E.approved='y'
 	AND E.member_id=M.member_id
-	AND E.member_id NOT IN (SELECT member_id FROM ".TABLE_PREFIX."users_online)
+	AND E.member_id NOT IN (SELECT member_id FROM %susers_online)
 	ORDER BY first_name ASC";
-$result = mysql_query($sql, $db);
+$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $_SESSION[course_id], TABLE_PREFIX));
 $course_participants_offline = array();
-while ($row = mysql_fetch_assoc($result)) {
+foreach ($result as $row) {
 	$current = array($row['jid'], $row['member_id'], $row['first_name'], $row['last_name']);
 	$course_participants_offline[] = $current;
 }
