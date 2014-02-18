@@ -1268,11 +1268,6 @@ jQuery(window).unload(function() {
 
 // connection
 jQuery(document).bind('connect', function (ev, data) {
-	// get value from cookies 		
-	//var conn_sid = jQuery.cookie("conn_sid");
-	//var conn_rid = jQuery.cookie("conn_rid");
-	//var conn_jid = jQuery.cookie("conn_jid");
-	//console.log("FROM COOKIE: ", conn_sid, conn_rid, conn_jid);
 	var conn = new Strophe.Connection("http://bosh.metajack.im:5280/xmpp-httpbind");
 	
 	if (document.getElementById('peek') != null) {
@@ -1283,72 +1278,57 @@ jQuery(document).bind('connect', function (ev, data) {
 		    Console.show_traffic(body, 'outgoing');
 		};
 	}
-	
-	//if (conn_sid == null && conn_rid == null && conn_jid == null){
-	if (true){	    
-		conn.connect(data.jid, data.password, function (status) {
-			if (status === Strophe.Status.CONNECTED) {
-				var course_members_jids = new Array();
-				if (data.id != undefined){
-					// make db entry if not exists yet
-					var course_id = jQuery('#chat')[0].getElementsByTagName("div")[0].id;
-					var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
-					jQuery.ajax({
-						type: "POST",
-						url: "ATutor15_2/mods/chat_new/ajax/check_auth.php",
-						data: dataString,
-						cache: false,
-						success: function (returned) {	
-							console.log("returned: " + returned);
-							/*if (returned == 0){
-								console.log('Error: Cannot insert!!.');
-								
-							} else {*/
-								document.getElementById('welcome').style.display = 'none';
-								jQuery('#chat').show();
-								
-								// add div to side box menu
-								var data = returned.split(' ');
-								var jid = data[0];
-								var name = data[1] + ' ' + data[2];
-								var pic = data[3];
-								var id = data[4];
-								Client.show_new_contact(jid, name, pic, id);
-								
-								course_members_jids = data.slice(5, data.length);
-								
-								jQuery(document).trigger('connected', [course_members_jids]);
-							//}
-				        },
-				        error: function (xhr, errorType, exception) {
-				            console.log("error: " + exception);
-				        }		
-					});
-				} else {
-					// store connection into cookies for later use
-					//jQuery.cookie("conn_sid", conn.sid, {expires: 365, path: '/'});
-					//jQuery.cookie("conn_rid", conn.rid, {expires: 365, path: '/'});
-					//jQuery.cookie("conn_jid", conn.jid, {expires: 365, path: '/'});
-					//console.log("WROTE TO COOKIES: ", conn.sid, conn.rid, typeof(conn.jid), conn.jid);
-			
-					jQuery(document).trigger('connected', [course_members_jids]);
-				}
-			} 
-			else if (status === Strophe.Status.AUTHFAIL) {
-				jQuery(document).trigger('authfail');
-			} 
-			else if (status === Strophe.Status.DISCONNECTED) {
-				jQuery(document).trigger('disconnected');
+	    
+	conn.connect(data.jid, data.password, function (status) {
+		if (status === Strophe.Status.CONNECTED) {
+			var course_members_jids = new Array();
+			if (data.id != undefined){
+				// make db entry if not exists yet
+				var course_id = jQuery('#chat')[0].getElementsByTagName("div")[0].id;
+				var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
+				jQuery.ajax({
+					type: "POST",
+					url: "ATutor15_2/mods/chat_new/ajax/check_auth.php",
+					data: dataString,
+					cache: false,
+					success: function (returned) {
+						// TODO: check if inserted
+						/*if (returned == 0){
+							console.log('Error: Cannot insert!');
+						} else {*/
+							document.getElementById('welcome').style.display = 'none';
+							jQuery('#chat').show();
+							
+							// add div to side box menu
+							var data = returned.split(' ');
+							var jid = data[0];
+							var name = data[1] + ' ' + data[2];
+							var pic = data[3];
+							var id = data[4];
+							Client.show_new_contact(jid, name, pic, id);
+							
+							course_members_jids = data.slice(5, data.length);
+							
+							jQuery(document).trigger('connected', [course_members_jids]);
+						//}
+					},
+					error: function (xhr, errorType, exception) {
+						console.log("error: " + exception);
+					}		
+				});
+			} else {			
+				jQuery(document).trigger('connected', [course_members_jids]);
 			}
-		});
-		Client.connection = conn;
+		} 
+		else if (status === Strophe.Status.AUTHFAIL) {
+			jQuery(document).trigger('authfail');
+		} 
+		else if (status === Strophe.Status.DISCONNECTED) {
+			jQuery(document).trigger('disconnected');
+		}
+	});
+	Client.connection = conn;
 		
-	} else {
-		//console.log("GET FROM COOKIE: ", conn_sid, conn_rid, conn_jid);
-		//conn.attach(conn_jid, conn_sid, parseInt(conn_rid) + 1);
-		
-		jQuery(document).trigger('connected');
-	}
 });
 
 

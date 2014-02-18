@@ -2,7 +2,8 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 global $_base_path, $include_all, $include_one, $stripslashes;
 global $savant;
-	
+
+
 $sql = "SELECT C.member_id, jid, first_name, last_name FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
 	WHERE E.course_id=%d
 	AND E.approved='y'

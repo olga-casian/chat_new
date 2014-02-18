@@ -14,32 +14,25 @@ if (isset($_POST['id']) && isset($_POST['jid']) && isset($_POST['pass']) && isse
 	if (count($result) == 0){
 		$sql_pass = "SELECT * FROM %smembers WHERE member_id=%d";
 		$result_pass = queryDB($sql_pass, array(TABLE_PREFIX, $id), true);
-		$mcrypt = new Anti_Mcrypt($result_pass[password]);
+		$mcrypt = new Anti_Mcrypt($result_pass['password']);
 		$pass = $mcrypt->encrypt($pass);
-		
 		$sql = "INSERT INTO %schat_members (member_id, jid, password) VALUES (%d, '%s', '%s')";
-		$resp = queryDB($sql, array(TABLE_PREFIX, $id, $jid, $pass), true, false);
-		//echo $pass;
-		//echo "here";
-		//echo $resp;
-		//if ($resp){
-			$sql = "SELECT first_name, last_name, member_id FROM %smembers WHERE member_id='%s'";
-			$row = queryDB($sql, array(TABLE_PREFIX, $id), true);
-			$to_echo = $jid. ' ' .$row['first_name']. ' ' .$row['last_name']. ' get_profile_img.php?id='.$row['member_id']. ' ' .$row['member_id'];
-			
-			$sql = "SELECT jid FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
-				WHERE E.course_id=%d
-				AND E.approved='y'
-				AND E.member_id=M.member_id
-				AND C.jid!='%s'";
-			$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $course_id, $jid));
-			foreach ($result as $row) {
-				$to_echo .= ' ' .$row['jid'];
-			}
-			echo $to_echo;
-		//} else{
-		//	echo 0;
-		//}
+		$resp = queryDB($sql, array(TABLE_PREFIX, $id, $jid, $pass));
+		// TODO: check if inserted
+		$sql = "SELECT * FROM %smembers WHERE member_id=%d";
+		$row = queryDB($sql, array(TABLE_PREFIX, $id), true);
+		$to_echo = $jid. ' ' .$row['first_name']. ' ' .$row['last_name']. ' get_profile_img.php?id='.$row['member_id']. ' ' .$row['member_id'];
+		
+		$sql = "SELECT * FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
+			WHERE E.course_id=%d
+			AND E.approved='y'
+			AND E.member_id=M.member_id
+			AND C.jid!='%s'";
+		$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $course_id, $jid));
+		foreach ($result as $row) {
+			$to_echo .= ' ' .$row['jid'];
+		}
+		echo $to_echo;
 	}
 	exit();
 	
