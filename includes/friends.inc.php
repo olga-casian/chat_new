@@ -1,16 +1,15 @@
 <?php
-$sql = "SELECT C.member_id, jid, first_name, last_name FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."course_enrollment E USING (member_id) INNER JOIN ".TABLE_PREFIX."members M
-	WHERE E.course_id=$_SESSION[course_id]
+$sql = "SELECT C.member_id, jid, first_name, last_name FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
+	WHERE E.course_id=%d
 	AND E.approved='y'
 	AND E.member_id=M.member_id
 	ORDER BY first_name ASC";
-$result = mysql_query($sql, $db);
+$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $_SESSION[course_id]));
 $course_participants = array();
-while ($row = mysql_fetch_assoc($result)) {
+foreach ($result as $row) {
 	$current = array($row['jid'], $row['member_id'], $row['first_name'], $row['last_name']);
 	$course_participants[] = $current;
 }
-//debug($course_participants);
 ?>
 
 <div id="friends">

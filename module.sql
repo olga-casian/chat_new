@@ -1,4 +1,4 @@
-# sql file for chat_2 module
+# sql file for chat_new module
 
 CREATE TABLE `chat_members` (
   `chat_member_id` int(8) NOT NULL AUTO_INCREMENT,

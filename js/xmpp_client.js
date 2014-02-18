@@ -1273,7 +1273,6 @@ jQuery(document).bind('connect', function (ev, data) {
 	//var conn_rid = jQuery.cookie("conn_rid");
 	//var conn_jid = jQuery.cookie("conn_jid");
 	//console.log("FROM COOKIE: ", conn_sid, conn_rid, conn_jid);
-
 	var conn = new Strophe.Connection("http://bosh.metajack.im:5280/xmpp-httpbind");
 	
 	if (document.getElementById('peek') != null) {
@@ -1296,14 +1295,15 @@ jQuery(document).bind('connect', function (ev, data) {
 					var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
 					jQuery.ajax({
 						type: "POST",
-						url: "ATutor/mods/chat_new/ajax/check_auth.php",
+						url: "ATutor15_2/mods/chat_new/ajax/check_auth.php",
 						data: dataString,
 						cache: false,
-						success: function (returned) {						
-							if (returned == 0){
+						success: function (returned) {	
+							console.log("returned: " + returned);
+							/*if (returned == 0){
 								console.log('Error: Cannot insert!!.');
 								
-							} else {
+							} else {*/
 								document.getElementById('welcome').style.display = 'none';
 								jQuery('#chat').show();
 								
@@ -1318,7 +1318,7 @@ jQuery(document).bind('connect', function (ev, data) {
 								course_members_jids = data.slice(5, data.length);
 								
 								jQuery(document).trigger('connected', [course_members_jids]);
-							}
+							//}
 				        },
 				        error: function (xhr, errorType, exception) {
 				            console.log("error: " + exception);

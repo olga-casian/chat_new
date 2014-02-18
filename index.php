@@ -3,7 +3,7 @@ define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
 
 $_custom_head .= '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/libraries/jquery-cookie/jquery.cookie.js"></script>
+		<script type="javascript" src="'.$_base_path.'mods/chat_new/js/libraries/jquery-cookie/jquery.cookie.js"></script>
 		
 				
 		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/xmpp_client.js"></script>
@@ -92,10 +92,10 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			This can take several seconds, please wait.
 		</p>
 	</div>
-	
+
 
 	<!--Peek XMPP console (comment to hide) -->
-	<!--<h4>Peek XMPP console</h4>
+	<h4>Peek XMPP console</h4>
 	<div id="peek">
 		<div id='console'></div>
 		<textarea id='console_input' class='disabled' disabled='disabled'></textarea>
@@ -104,11 +104,22 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			<input id='send_button' type='button' value='Send Data' disabled='disabled' class='button' onclick="console_send();">
 			<input id='disconnect_button' type='button' value='Disconnect' disabled='disabled' class='button' onclick="console_disconnect();">
 		</div>
-	</div>-->
+	</div>
 	<!--end Peek XMPP console-->
 	
 	
+	<!--hack to ensure all js was loaded-->
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_client.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_console.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/interface.js"></script>'; ?>
 	
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe_sha1.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/sha1.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe.muc.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/flXHR.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe.flxhr.js"></script>'; ?>
+	
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/moment.min.js"></script>'; ?>
 	
 	<script>
 	    jQuery("#tabs, #subtabs").tabs();
@@ -128,28 +139,9 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			}
 		});
 		
-	    
-	    Interface.refresh_form();
-	    Interface.hide_div();
-	    
-	    Interface.load_inbox();
-	    
-//	     window.onbeforeunload = function(event)
-//    {
-//       alert('asasa');
-//    };
-
-//window.onbeforeunload = function (e) {
-//  e = e || window.event;
-//
-//  if (e) {
-//    alert('asasas');
-//  }
-//
-//  return 'Any string';
-//};
-
-	    
+		Interface.refresh_form();
+	    Interface.hide_div();	    
+	    Interface.load_inbox();		
 	</script>
 
 <?php require (AT_INCLUDE_PATH.'footer.inc.php'); ?>

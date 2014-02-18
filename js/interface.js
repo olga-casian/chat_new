@@ -1,14 +1,12 @@
-
 var Interface = {
 	// hides #chat div if user enters for the first time and #welcome div if the DB entry exists;
 	// called each time on index page load
 	hide_div: function (){
 		jQuery("#dialog_message").hide();
-		
 		var dataString = 'id=' + jQuery("div").filter(jQuery('#chat').find('div')[1]).attr('id');
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/check_auth.php",
+			url: "ATutor15_2/mods/chat_new/ajax/check_auth.php",
 			data: dataString,
 			cache: false,
 			success: function (exists) {
@@ -375,7 +373,6 @@ var Interface = {
 	} 
 
 };
- 
 
 // ================= CONVERSATIONS
 jQuery(function() {
