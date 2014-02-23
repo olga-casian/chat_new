@@ -33,4 +33,4 @@ CREATE TABLE `chat_user_mucs` (
 
 
 INSERT INTO `language_text` VALUES ('en', '_module','chat_new','XMPP Chat',NOW(),'');
-INSERT INTO `language_text` VALUES ('en', '_module','chat_new_text','New XMPP-based chat for ATutor.',NOW(),'');
+INSERT INTO `language_text` VALUES ('en', '_module','chat_new_text','XMPP-based chat for ATutor.',NOW(),'');

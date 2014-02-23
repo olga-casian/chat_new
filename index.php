@@ -76,7 +76,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			</div>
 		
 			<div id="tab_settings">
-			<?php require ('includes/settings.inc.php'); ?>
+			<?php require ('includes/help.inc.php'); ?>
 			</div>		
 		</div>  
 	</div><!--end chat-->
