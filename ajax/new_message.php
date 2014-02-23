@@ -20,14 +20,12 @@ if (isset($_POST['from']) && isset($_POST['to']) && isset($_POST['msg']) && isse
 		// chat message
 		$sql = "INSERT INTO `%schat_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('%s', '%s', '%s', '%s')";
 		$resp = queryDB($sql, array(TABLE_PREFIX, $from, $to, $msg, $timestamp));
-		// TODO: check if inserted
 		echo 1;
 		
 	} else if ($_POST['groupchat'] == 1) {
 		// muc message	
 		$sql = "INSERT INTO `%schat_muc_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('%s', '%s', '%s', '%s')";
 		$resp = queryDB($sql, array(TABLE_PREFIX, $from, $to, $msg, $timestamp));
-		// TODO: check if inserted
 		echo 1;
 	}
 }

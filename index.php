@@ -24,7 +24,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 
 ?>
 
-	<div id="welcome" class="fl-container-flex90">
+	<div id="welcome" class="fl-container-flex90" style="display: none;">
 		Welcome to the new version of chat!<br/><br/>
 		
 		In order to login you need a free account on <a href="https://www.talkr.im/">talkr.im</a> server that is used by the chat. 
@@ -53,7 +53,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 	</div><!--end welcome-->
 	
 	
-	<div id="chat">
+	<div id="chat" style="display: none;">
 		<div id="<?php echo $_SESSION[course_id]; ?>"></div>
 		<div id="<?php echo $_SESSION[member_id]; ?>"></div>
 		<div class="fl-container-flex90 fl-left democ-linearize-sections ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabs">
@@ -109,6 +109,8 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 	
 	
 	<!--hack to ensure all js was loaded-->
+	<?php echo '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>'; ?>
+	
 	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_client.js"></script>'; ?>
 	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_console.js"></script>'; ?>
 	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/interface.js"></script>'; ?>
@@ -122,7 +124,9 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/moment.min.js"></script>'; ?>
 	
 	<script>
-	    jQuery("#tabs, #subtabs").tabs();
+		var ATutorBasePath = "<?php echo $_base_path; ?>".substring(1);
+		
+		jQuery("#tabs, #subtabs").tabs();
 	    
 	    jQuery('#subtabs').tabs({
 			select: function(event, ui){
@@ -140,8 +144,8 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 		});
 		
 		Interface.refresh_form();
-	    Interface.hide_div();	    
-	    Interface.load_inbox();		
+	    Interface.show_div();	    
+	    Interface.load_inbox();	
 	</script>
 
 <?php require (AT_INCLUDE_PATH.'footer.inc.php'); ?>

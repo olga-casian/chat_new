@@ -2,6 +2,7 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 require_once("mcrypt/Mcrypt.php");
+require_once("constants.php");
 
 if (isset($_POST['my_id'])) {
 	$my_id = $_POST['my_id'];
@@ -11,7 +12,7 @@ if (isset($_POST['my_id'])) {
 	} else {
 		$offset = 0;
 	}
-	$end = $offset + 10; // load 10 messages by ony ajax request TODO: create property 
+	$end = $offset + $INBOX_ONE_TIME_LOAD; 
 	
 	$sql = "SELECT * FROM %schat_members m WHERE m.member_id='%d'";
 	$result = queryDB($sql, array(TABLE_PREFIX, $my_id), true);
@@ -153,15 +154,11 @@ if (isset($_POST['my_id'])) {
 
 } else if (isset($_POST['group_jid'])) {
 	$jid = $_POST['group_jid'];
-	$sql = "SELECT COUNT(*) as nr FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."members M USING (member_id)
+	$sql = "SELECT COUNT(*) as nr FROM %schat_members C INNER JOIN %smembers M USING (member_id)
 				WHERE C.jid IN
-					(SELECT UM.user_jid FROM ".TABLE_PREFIX."chat_user_mucs UM WHERE UM.muc_jid='".$jid."')";
-	$result = mysql_query($sql, $db);
-	if ($result) {
-		$row = mysql_fetch_assoc($result);
-		
-		echo $row[nr]."  ".$_base_path;
-	}
+					(SELECT UM.user_jid FROM %schat_user_mucs UM WHERE UM.muc_jid='%s')";
+	$row = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $jid), true);
+	echo $row['nr']."  ".$_base_path;
 	
 }
 

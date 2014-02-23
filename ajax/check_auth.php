@@ -18,7 +18,6 @@ if (isset($_POST['id']) && isset($_POST['jid']) && isset($_POST['pass']) && isse
 		$pass = $mcrypt->encrypt($pass);
 		$sql = "INSERT INTO %schat_members (member_id, jid, password) VALUES (%d, '%s', '%s')";
 		$resp = queryDB($sql, array(TABLE_PREFIX, $id, $jid, $pass));
-		// TODO: check if inserted
 		$sql = "SELECT * FROM %smembers WHERE member_id=%d";
 		$row = queryDB($sql, array(TABLE_PREFIX, $id), true);
 		$to_echo = $jid. ' ' .$row['first_name']. ' ' .$row['last_name']. ' get_profile_img.php?id='.$row['member_id']. ' ' .$row['member_id'];

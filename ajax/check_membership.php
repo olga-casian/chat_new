@@ -6,12 +6,11 @@ if (!defined('AT_INCLUDE_PATH')) { exit; }
 if (isset($_POST['jid'])){
 	$jid = $_POST['jid'];
 	// if user is from the current course
-	$sql = "SELECT * FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."course_enrollment E USING (member_id)
-		WHERE jid='".$jid."' 
-		AND E.course_id=$_SESSION[course_id]
+	$sql = "SELECT * FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id)
+		WHERE jid='%s' 
+		AND E.course_id=%d
 		AND E.approved='y'";
-	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);
+	$row = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, $jid, $_SESSION[course_id]), true);
 	if (is_array($row)){
 		echo 1;
 	} else {
