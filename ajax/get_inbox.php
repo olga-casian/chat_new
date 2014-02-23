@@ -2,7 +2,7 @@
 if (!defined('AT_INCLUDE_PATH')) { exit; }
 
 require_once("mcrypt/Mcrypt.php");
-require_once("constants.php");
+require_once __DIR__ . '/../constants.php';
 
 if (isset($_POST['my_id'])) {
 	$my_id = $_POST['my_id'];

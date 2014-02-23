@@ -251,7 +251,7 @@ var Client = {
 						var dataString = 'roomname=' + from_bare + '&members=' + members;
 						jQuery.ajax({
 							type: "POST",
-							url: ATutorBasePath + "mods/chat_new/ajax/new_muc.php",
+							url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/new_muc.php",
 							data: dataString,
 							cache: false,
 							success: function (returned) {
@@ -668,7 +668,7 @@ var Client = {
 		var dataString = 'from_bare=' + from_bare;
 		jQuery.ajax({
 			type: "POST",
-			url: ATutorBasePath + "mods/chat_new/ajax/get_new_contact_data.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_new_contact_data.php",
 			data: dataString,
 			cache: false,
 			success: function (data) {			
@@ -744,7 +744,7 @@ var Client = {
 				var dataString = 'group_jid=' + from_bare;
 				jQuery.ajax({
 					type: "POST",
-					url: ATutorBasePath + "mods/chat_new/ajax/get_inbox.php",
+					url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_inbox.php",
 					data: dataString,
 					async: false,
 					cache: false,
@@ -923,7 +923,7 @@ var Client = {
 			var dataString = 'to=' + to_bare + '&my_jid=' + Strophe.getBareJidFromJid(Client.my_full_jid);
 			jQuery.ajax({
 				type: "POST",
-				url: ATutorBasePath + "mods/chat_new/ajax/get_muc_roster.php",
+				url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_muc_roster.php",
 				data: dataString,
 				cache: false,
 				success: function (data) {
@@ -971,7 +971,7 @@ var Client = {
 		}		
 		jQuery.ajax({
 			type: "POST",
-			url: ATutorBasePath + "mods/chat_new/ajax/get_older_messages.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_older_messages.php",
 			data: dataString,
 			cache: false,
 			success: function (data) {		
@@ -997,7 +997,7 @@ var Client = {
 						}
 						jQuery.ajax({
 							type: "POST",
-							url: ATutorBasePath + "mods/chat_new/ajax/get_older_messages.php",
+							url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_older_messages.php",
 							data: dataString,
 							cache: false,
 							success: function (data) {
@@ -1161,7 +1161,7 @@ var Client = {
 		var dataString = 'jid=' + jid;
 		jQuery.ajax({
 			type: "POST",
-			url: ATutorBasePath + "mods/chat_new/ajax/check_membership.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/check_membership.php",
 			data: dataString,
 			cache: false,
 			success: function (returned) {
@@ -1186,7 +1186,7 @@ var Client = {
 		var dataString = 'from=' + from + '&to=' + to + '&msg=' + msg + '&timestamp=' + timestamp + '&groupchat=' + groupchat;
 		jQuery.ajax({
 			type: "POST",
-			url: ATutorBasePath + "mods/chat_new/ajax/new_message.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/new_message.php",
 			data: dataString,
 			cache: false,
 			success: function (returned) {
@@ -1256,19 +1256,11 @@ var Client = {
     	return message.replace(exp,"<a href='$1'>$1</a>");
 	}
 };
-/*
-jQuery(window).unload(function() {
-	alert("unload");
-	//Client.connection.sync = true; // Switch to using synchronous requests since this is typically called onUnload.
-	Client.connection.pause();
-	//Client.connection.flush();
-	Client.connection.disconnect();
-	return false;
-});*/
+
 
 // connection
 jQuery(document).bind('connect', function (ev, data) {
-	var conn = new Strophe.Connection("http://bosh.metajack.im:5280/xmpp-httpbind");
+	var conn = new Strophe.Connection(CONNECTION_MANAGER);
 	
 	if (document.getElementById('peek') != null) {
 		conn.xmlInput = function (body) {
@@ -1288,7 +1280,7 @@ jQuery(document).bind('connect', function (ev, data) {
 				var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
 				jQuery.ajax({
 					type: "POST",
-					url: ATutorBasePath + "mods/chat_new/ajax/check_auth.php",
+					url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/check_auth.php",
 					data: dataString,
 					cache: false,
 					success: function (returned) {
@@ -1368,7 +1360,7 @@ jQuery(document).bind('connected', function (event, course_members_jids) {
 	var dataString = 'id=' + jQuery("div").filter(jQuery('#chat').find('div')[1]).attr('id');
 	jQuery.ajax({
 		type: "POST",
-		url: ATutorBasePath + "mods/chat_new/ajax/get_mucs.php",
+		url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_mucs.php",
 		data: dataString,
 		cache: false,
 		success: function (data) {
