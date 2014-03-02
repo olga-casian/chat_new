@@ -1,22 +1,20 @@
-
 var Interface = {
-	// hides #chat div if user enters for the first time and #welcome div if the DB entry exists;
-	// called each time on index page load
-	hide_div: function (){
+
+	// shows #chat div if user enters for the first time or #welcome div if the DB entry exists;
+	// called each time on index page load	
+	show_div: function (){
 		jQuery("#dialog_message").hide();
-		
 		var dataString = 'id=' + jQuery("div").filter(jQuery('#chat').find('div')[1]).attr('id');
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/check_auth.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/check_auth.php",
 			data: dataString,
 			cache: false,
 			success: function (exists) {
 				if (exists == 0){
-					document.getElementById('chat').style.display = 'none';
+					document.getElementById('welcome').style.display = 'block';					
 				} else {
-					document.getElementById('welcome').style.display = 'none';
-					
+					document.getElementById('chat').style.display = 'block';					
 					var data = exists.split(' ');
 					var jid = data[0];
 					var pass = data[1];
@@ -66,7 +64,7 @@ var Interface = {
 		var dataString = 'my_id=' + id;
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/get_inbox.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_inbox.php",
 			data: dataString,
 			cache: false,
 			success: function (data) {			
@@ -95,7 +93,7 @@ var Interface = {
 						var dataString = 'my_id=' + id + '&offset=' + offset;
 						jQuery.ajax({
 							type: "POST",
-							url: "ATutor/mods/chat_new/ajax/get_inbox.php",
+							url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_inbox.php",
 							data: dataString,
 							cache: false,
 							success: function (data) {
@@ -151,7 +149,7 @@ var Interface = {
 	on_select_subtab: function (jid_id){
 		if (jQuery('a[href="#chat_' + jid_id + '"]').parent().hasClass("conversation_tab_new_msg")) {
 			var tab_text = jQuery('a[href="#chat_' + jid_id + '"]')[0].textContent;
-			var nr = tab_text.match(/\([0-9999]\)/);
+			var nr = tab_text.match(/\([0-9]+\)/);
 			if (nr != null) {
 				var len = nr[0].length;
 				jQuery('a[href="#chat_' + jid_id + '"]')[0].textContent = tab_text.slice(0, tab_text.length - (len + 1));
@@ -168,14 +166,9 @@ var Interface = {
 		}
 		
 		// scroll and focus
-		
-		//console.log(jQuery('#chat_' + jid_id + ' textarea'));
 		jQuery('#chat_' + jid_id + ' textarea').focus();
-		//Client.scroll_chat(jid_id);
-		//TODO!!!!!
 		var div = jQuery('#chat_' + jid_id + ' .chat_messages').get(0);
 		if (div != undefined) {
-			//console.log("ev scroll: ", div.scrollTop, div.scrollHeight, jid_id, jQuery('#chat_' + jid_id + ' .chat_messages'), div);
 			div.scrollTop = div.scrollHeight;
 		}
 	},
@@ -318,7 +311,6 @@ var Interface = {
 	// opens conversation tab if element was selected and enter clicked
 	optionKeyEvent_friends_column_wrapper: function(event) {
 		var tb = event.target;
-
 	    if ((event.type == "keydown" || event.type == "keypress") && event.keyCode == 13) {
 	    	jQuery("div").filter(tb).trigger('click');
 		}
@@ -375,7 +367,6 @@ var Interface = {
 	} 
 
 };
- 
 
 // ================= CONVERSATIONS
 jQuery(function() {
@@ -385,16 +376,15 @@ jQuery(function() {
 
 		// tabs init with a custom tab template and an "add" callback filling in the content
 		var jQuerysubtabs = jQuery( "#subtabs").tabs({
-			//tabTemplate: "<li><a href='#{href}'>#{label}</a><span class='ui-icon ui-icon-minus' onclick='minimize_medium();'>Minimize Tab</span><span class='ui-icon ui-icon-close'>Remove Tab</span></li>"
 			tabTemplate: "<li><a href='#{href}'>#{label}</a><span class='ui-icon ui-icon-close'>Remove Tab</span></li>"
 
 		});
 
 		// close icon: removing the tab on click
-		// note: closable tabs gonna be an option in the future - see http://dev.jqueryui.com/ticket/3924
-		jQuery( "#subtabs span.ui-icon-close" ).live( "click", function() {
+		jQuery( "#subtabs" ).delegate("span.ui-icon-close", "click", function(event) {
 			var index = jQuery( "li", jQuerysubtabs ).index( jQuery( this ).parent() );
-			jQuerysubtabs.tabs( "remove", index );
+			jQuery( "#subtabs").tabs( "remove", index );
+			event.stopImmediatePropagation();
 		});
 });
 
@@ -532,7 +522,7 @@ jQuery('.conversations_send').live('click', function () {
 	
 	
 // ================= GROUP CHAT
-jQuery('.friends_column_wrapper_classmates').live('click', function () {
+jQuery('#friends').delegate('.friends_column_wrapper_classmates', 'click', function () {
 	var friendsList = jQuery("#friends_list");
 	var friendsMembers = jQuery("#friends_members");
 	var clicked = jQuery(this);
@@ -547,7 +537,6 @@ jQuery('.friends_column_wrapper_classmates').live('click', function () {
 		Interface.replace_friend(clicked, friendsList);
 		jQuery(this).attr('title', jQuery(this).find("td")[1].textContent + " - not member");
 	}
-	
 	Interface.refresh_form();
 });
 
@@ -618,6 +607,13 @@ jQuery('#friends_selected_bnt').live('click', function () {
 			Client.scroll_chat(jid_id);
 		}
 	}
+	
+	jQuery('.friends_column_wrapper_classmates').each(function() {
+		var friendsList = jQuery("#friends_list");
+		Interface.replace_friend(jQuery(this), friendsList);
+	});
+	$('#groupname').val("");
+	Interface.refresh_form();
 });
 
 

@@ -9,29 +9,24 @@ if (isset($_POST['from']) && isset($_POST['to']) && isset($_POST['msg']) && isse
 	$msg = urlencode($_POST['msg']);
 	$timestamp = $_POST['timestamp'];
 	
-	$sql_from = "SELECT * FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."members M USING (member_id) 
-					WHERE C.jid='".$from."'";
-	$result_from = mysql_query($sql_from, $db);
-	$row_from = mysql_fetch_assoc($result_from);
+	$sql_from = "SELECT * FROM %schat_members C INNER JOIN %smembers M USING (member_id) 
+					WHERE C.jid='%s'";
+	$row_from = queryDB($sql_from, array(TABLE_PREFIX, TABLE_PREFIX, $from), true);
 	
-	$mcrypt = new Anti_Mcrypt($row_from[password]);
+	$mcrypt = new Anti_Mcrypt($row_from['password']);
 	$msg = $mcrypt->encrypt($msg);
 	
 	if ($_POST['groupchat'] == 0){
 		// chat message
-		$sql = "INSERT INTO `".TABLE_PREFIX."chat_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('$from', '$to', '$msg', '$timestamp')";
-		$resp = mysql_query($sql,$db);
-		if ($resp){
-			echo 1;
-		}
+		$sql = "INSERT INTO `%schat_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('%s', '%s', '%s', '%s')";
+		$resp = queryDB($sql, array(TABLE_PREFIX, $from, $to, $msg, $timestamp));
+		echo 1;
 		
 	} else if ($_POST['groupchat'] == 1) {
 		// muc message	
-		$sql = "INSERT INTO `".TABLE_PREFIX."chat_muc_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('$from', '$to', '$msg', '$timestamp')";
-		$resp = mysql_query($sql,$db);
-		if ($resp){
-			echo 1;
-		}
+		$sql = "INSERT INTO `%schat_muc_messages` (`from`, `to`, `msg`, `timestamp`) VALUES ('%s', '%s', '%s', '%s')";
+		$resp = queryDB($sql, array(TABLE_PREFIX, $from, $to, $msg, $timestamp));
+		echo 1;
 	}
 }
 

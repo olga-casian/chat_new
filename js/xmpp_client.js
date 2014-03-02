@@ -251,7 +251,7 @@ var Client = {
 						var dataString = 'roomname=' + from_bare + '&members=' + members;
 						jQuery.ajax({
 							type: "POST",
-							url: "ATutor/mods/chat_new/ajax/new_muc.php",
+							url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/new_muc.php",
 							data: dataString,
 							cache: false,
 							success: function (returned) {
@@ -668,7 +668,7 @@ var Client = {
 		var dataString = 'from_bare=' + from_bare;
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/get_new_contact_data.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_new_contact_data.php",
 			data: dataString,
 			cache: false,
 			success: function (data) {			
@@ -744,7 +744,7 @@ var Client = {
 				var dataString = 'group_jid=' + from_bare;
 				jQuery.ajax({
 					type: "POST",
-					url: "ATutor/mods/chat_new/ajax/get_inbox.php",
+					url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_inbox.php",
 					data: dataString,
 					async: false,
 					cache: false,
@@ -801,7 +801,7 @@ var Client = {
 				if (found == false) {
 					nr = parseInt(nr) + 1;
 				}
-				var nr_match = jQuery('a[href="#tab_inbox"]')[0].textContent.match(/\([0-9999]\)/);
+				var nr_match = jQuery('a[href="#tab_inbox"]')[0].textContent.match(/\([0-9]+\)/);
 				if (nr_match != null) {
 					var len = nr_match[0].length;
 					jQuery('a[href="#tab_inbox"]')[0].textContent = jQuery('a[href^="#tab_inbox"]')[0].textContent.slice(0, jQuery('a[href="#tab_inbox"]')[0].textContent.length - len) + "(" + nr + ")";
@@ -823,7 +823,7 @@ var Client = {
 			jQuery('a[href="#chat_' + jid_id + '"]').parent().addClass("conversation_tab_new_msg");
 				
 			var tab_text = jQuery('a[href="#chat_' + jid_id + '"]')[0].textContent;
-		    var nr = tab_text.match(/\([0-9999]\)/);
+		    var nr = tab_text.match(/\([0-9]+\)/);
 			if (nr != null) {
 				var len = nr[0].length;
 				nr = parseInt(nr[0].slice(0, nr[0].length-1).slice(1, nr[0].length))+1;
@@ -923,7 +923,7 @@ var Client = {
 			var dataString = 'to=' + to_bare + '&my_jid=' + Strophe.getBareJidFromJid(Client.my_full_jid);
 			jQuery.ajax({
 				type: "POST",
-				url: "ATutor/mods/chat_new/ajax/get_muc_roster.php",
+				url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_muc_roster.php",
 				data: dataString,
 				cache: false,
 				success: function (data) {
@@ -971,7 +971,7 @@ var Client = {
 		}		
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/get_older_messages.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_older_messages.php",
 			data: dataString,
 			cache: false,
 			success: function (data) {		
@@ -997,7 +997,7 @@ var Client = {
 						}
 						jQuery.ajax({
 							type: "POST",
-							url: "ATutor/mods/chat_new/ajax/get_older_messages.php",
+							url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_older_messages.php",
 							data: dataString,
 							cache: false,
 							success: function (data) {
@@ -1155,13 +1155,13 @@ var Client = {
 		jQuery("#friends_members").append(group_chat_item);
 	},
 	
-	// checks if user with jid is current course and chat member
+	// checks if user with jid is in current course and chat member
 	// true if is member, false otherwise
 	check_membership: function (jid) {
 		var dataString = 'jid=' + jid;
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/check_membership.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/check_membership.php",
 			data: dataString,
 			cache: false,
 			success: function (returned) {
@@ -1186,7 +1186,7 @@ var Client = {
 		var dataString = 'from=' + from + '&to=' + to + '&msg=' + msg + '&timestamp=' + timestamp + '&groupchat=' + groupchat;
 		jQuery.ajax({
 			type: "POST",
-			url: "ATutor/mods/chat_new/ajax/new_message.php",
+			url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/new_message.php",
 			data: dataString,
 			cache: false,
 			success: function (returned) {
@@ -1256,25 +1256,11 @@ var Client = {
     	return message.replace(exp,"<a href='$1'>$1</a>");
 	}
 };
-/*
-jQuery(window).unload(function() {
-	alert("unload");
-	//Client.connection.sync = true; // Switch to using synchronous requests since this is typically called onUnload.
-	Client.connection.pause();
-	//Client.connection.flush();
-	Client.connection.disconnect();
-	return false;
-});*/
+
 
 // connection
 jQuery(document).bind('connect', function (ev, data) {
-	// get value from cookies 		
-	//var conn_sid = jQuery.cookie("conn_sid");
-	//var conn_rid = jQuery.cookie("conn_rid");
-	//var conn_jid = jQuery.cookie("conn_jid");
-	//console.log("FROM COOKIE: ", conn_sid, conn_rid, conn_jid);
-
-	var conn = new Strophe.Connection("http://bosh.metajack.im:5280/xmpp-httpbind");
+	var conn = new Strophe.Connection(CONNECTION_MANAGER);
 	
 	if (document.getElementById('peek') != null) {
 		conn.xmlInput = function (body) {
@@ -1284,71 +1270,52 @@ jQuery(document).bind('connect', function (ev, data) {
 		    Console.show_traffic(body, 'outgoing');
 		};
 	}
-	
-	//if (conn_sid == null && conn_rid == null && conn_jid == null){
-	if (true){	    
-		conn.connect(data.jid, data.password, function (status) {
-			if (status === Strophe.Status.CONNECTED) {
-				var course_members_jids = new Array();
-				if (data.id != undefined){
-					// make db entry if not exists yet
-					var course_id = jQuery('#chat')[0].getElementsByTagName("div")[0].id;
-					var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
-					jQuery.ajax({
-						type: "POST",
-						url: "ATutor/mods/chat_new/ajax/check_auth.php",
-						data: dataString,
-						cache: false,
-						success: function (returned) {						
-							if (returned == 0){
-								console.log('Error: Cannot insert!!.');
-								
-							} else {
-								document.getElementById('welcome').style.display = 'none';
-								jQuery('#chat').show();
-								
-								// add div to side box menu
-								var data = returned.split(' ');
-								var jid = data[0];
-								var name = data[1] + ' ' + data[2];
-								var pic = data[3];
-								var id = data[4];
-								Client.show_new_contact(jid, name, pic, id);
-								
-								course_members_jids = data.slice(5, data.length);
-								
-								jQuery(document).trigger('connected', [course_members_jids]);
-							}
-				        },
-				        error: function (xhr, errorType, exception) {
-				            console.log("error: " + exception);
-				        }		
-					});
-				} else {
-					// store connection into cookies for later use
-					//jQuery.cookie("conn_sid", conn.sid, {expires: 365, path: '/'});
-					//jQuery.cookie("conn_rid", conn.rid, {expires: 365, path: '/'});
-					//jQuery.cookie("conn_jid", conn.jid, {expires: 365, path: '/'});
-					//console.log("WROTE TO COOKIES: ", conn.sid, conn.rid, typeof(conn.jid), conn.jid);
-			
-					jQuery(document).trigger('connected', [course_members_jids]);
-				}
-			} 
-			else if (status === Strophe.Status.AUTHFAIL) {
-				jQuery(document).trigger('authfail');
-			} 
-			else if (status === Strophe.Status.DISCONNECTED) {
-				jQuery(document).trigger('disconnected');
+	    
+	conn.connect(data.jid, data.password, function (status) {
+		if (status === Strophe.Status.CONNECTED) {
+			var course_members_jids = new Array();
+			if (data.id != undefined){
+				// make db entry if not exists yet
+				var course_id = jQuery('#chat')[0].getElementsByTagName("div")[0].id;
+				var dataString = 'id=' + data.id + '&jid=' + data.jid + '&pass=' + data.password + '&course_id=' + course_id;
+				jQuery.ajax({
+					type: "POST",
+					url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/check_auth.php",
+					data: dataString,
+					cache: false,
+					success: function (returned) {
+						document.getElementById('welcome').style.display = 'none';
+						jQuery('#chat').show();
+						
+						// add div to side box menu
+						var data = returned.split(' ');
+						var jid = data[0];
+						var name = data[1] + ' ' + data[2];
+						var pic = data[3];
+						var id = data[4];
+						Client.show_new_contact(jid, name, pic, id);
+						
+						course_members_jids = data.slice(5, data.length);
+						
+						jQuery(document).trigger('connected', [course_members_jids]);
+					},
+					error: function (xhr, errorType, exception) {
+						console.log("error: " + exception);
+					}		
+				});
+			} else {			
+				jQuery(document).trigger('connected', [course_members_jids]);
 			}
-		});
-		Client.connection = conn;
+		} 
+		else if (status === Strophe.Status.AUTHFAIL) {
+			jQuery(document).trigger('authfail');
+		} 
+		else if (status === Strophe.Status.DISCONNECTED) {
+			jQuery(document).trigger('disconnected');
+		}
+	});
+	Client.connection = conn;
 		
-	} else {
-		//console.log("GET FROM COOKIE: ", conn_sid, conn_rid, conn_jid);
-		//conn.attach(conn_jid, conn_sid, parseInt(conn_rid) + 1);
-		
-		jQuery(document).trigger('connected');
-	}
 });
 
 
@@ -1393,7 +1360,7 @@ jQuery(document).bind('connected', function (event, course_members_jids) {
 	var dataString = 'id=' + jQuery("div").filter(jQuery('#chat').find('div')[1]).attr('id');
 	jQuery.ajax({
 		type: "POST",
-		url: "ATutor/mods/chat_new/ajax/get_mucs.php",
+		url: ATUTOR_BASE_PATH + "mods/chat_new/ajax/get_mucs.php",
 		data: dataString,
 		cache: false,
 		success: function (data) {

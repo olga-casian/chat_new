@@ -9,38 +9,29 @@ if (isset($_POST['id']) && isset($_POST['jid']) && isset($_POST['pass']) && isse
 	$jid = $_POST['jid'];
 	$pass = $_POST['pass'];	
 	$course_id = $_POST['course_id'];
-	$sql = "SELECT * FROM ".TABLE_PREFIX."chat_members WHERE member_id=$id";
-	$result = mysql_query($sql, $db);
-	if (count(mysql_fetch_assoc($result)) == 1){
-		
-		$sql_pass = "SELECT * FROM ".TABLE_PREFIX."members WHERE member_id='".$id."'";
-		$result_pass = mysql_query($sql_pass, $db);
-		$row_pass = mysql_fetch_assoc($result_pass);
-					
-		$mcrypt = new Anti_Mcrypt($row_pass[password]);
+	$sql = "SELECT * FROM %schat_members WHERE member_id=%d";
+	$result = queryDB($sql, array(TABLE_PREFIX, $id));
+	if (count($result) == 0){
+		$sql_pass = "SELECT * FROM %smembers WHERE member_id=%d";
+		$result_pass = queryDB($sql_pass, array(TABLE_PREFIX, $id), true);
+		$mcrypt = new Anti_Mcrypt($result_pass['password']);
 		$pass = $mcrypt->encrypt($pass);
+		$sql = "INSERT INTO %schat_members (member_id, jid, password) VALUES (%d, '%s', '%s')";
+		$resp = queryDB($sql, array(TABLE_PREFIX, $id, $jid, $pass));
+		$sql = "SELECT * FROM %smembers WHERE member_id=%d";
+		$row = queryDB($sql, array(TABLE_PREFIX, $id), true);
+		$to_echo = $jid. ' ' .$row['first_name']. ' ' .$row['last_name']. ' get_profile_img.php?id='.$row['member_id']. ' ' .$row['member_id'];
 		
-		$sql = "INSERT INTO ".TABLE_PREFIX."chat_members (member_id, jid, password) VALUES ('$id', '$jid', '$pass')";
-		$resp = mysql_query($sql,$db);
-		if ($resp){
-			$sql = "SELECT first_name, last_name, member_id FROM ".TABLE_PREFIX."members WHERE member_id=$id";
-			$result = mysql_query($sql, $db);
-			$row = mysql_fetch_assoc($result);			
-			$to_echo = $jid. ' ' .$row['first_name']. ' ' .$row['last_name']. ' get_profile_img.php?id='.$row['member_id']. ' ' .$row['member_id'];
-			
-			$sql = "SELECT jid FROM ".TABLE_PREFIX."chat_members C INNER JOIN ".TABLE_PREFIX."course_enrollment E USING (member_id) INNER JOIN ".TABLE_PREFIX."members M
-				WHERE E.course_id=".$course_id."
-				AND E.approved='y'
-				AND E.member_id=M.member_id
-				AND C.jid!='".$jid."'";
-			$result = mysql_query($sql, $db);
-			while ($row = mysql_fetch_assoc($result)) {
-				$to_echo .= ' ' .$row['jid'];
-			}
-			echo $to_echo;
-		} else{
-			echo 0;
+		$sql = "SELECT * FROM %schat_members C INNER JOIN %scourse_enrollment E USING (member_id) INNER JOIN %smembers M
+			WHERE E.course_id=%d
+			AND E.approved='y'
+			AND E.member_id=M.member_id
+			AND C.jid!='%s'";
+		$result = queryDB($sql, array(TABLE_PREFIX, TABLE_PREFIX, TABLE_PREFIX, $course_id, $jid));
+		foreach ($result as $row) {
+			$to_echo .= ' ' .$row['jid'];
 		}
+		echo $to_echo;
 	}
 	exit();
 	
@@ -49,20 +40,18 @@ if (isset($_POST['id']) && isset($_POST['jid']) && isset($_POST['pass']) && isse
 // called each time on index page load, gets jid and pass to authenticate
 if (isset($_POST['id'])){
 	$id = $_POST['id'];
-	$sql = "SELECT jid, password FROM ".TABLE_PREFIX."chat_members WHERE member_id=$id";
-	$result = mysql_query($sql, $db);
-	$row = mysql_fetch_assoc($result);
-	if (count($row) == 1){
+	$sql = "SELECT * FROM %schat_members WHERE member_id=%d";
+	$result = queryDB($sql, array(TABLE_PREFIX, $id), true);
+	if (count($result) == 0){
 		echo 0;
 	} else {
-		$sql_pass = "SELECT * FROM ".TABLE_PREFIX."members WHERE member_id='".$id."'";
-		$result_pass = mysql_query($sql_pass, $db);
-		$row_pass = mysql_fetch_assoc($result_pass);
-					
-		$mcrypt = new Anti_Mcrypt($row_pass[password]);
-		$pass = $mcrypt->decrypt($row['password']);
+		$sql_pass = "SELECT * FROM %smembers WHERE member_id=%d";
+		$result_pass = queryDB($sql_pass, array(TABLE_PREFIX, $id), true);
 		
-		echo $row['jid']. ' ' .$pass;
+		$mcrypt = new Anti_Mcrypt($result_pass[password]);
+		$pass = $mcrypt->decrypt($result['password']);
+		
+		echo $result['jid']. ' ' .$pass;
 	}
 	exit();
 }

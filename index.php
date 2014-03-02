@@ -1,11 +1,9 @@
 <?php
 define('AT_INCLUDE_PATH', '../../include/');
 require (AT_INCLUDE_PATH.'vitals.inc.php');
+require_once('constants.php');
 
-$_custom_head .= '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/libraries/jquery-cookie/jquery.cookie.js"></script>
-		
-				
+$_custom_head .= '	
 		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/xmpp_client.js"></script>
 		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/xmpp_console.js"></script>
 		<script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/interface.js"></script>
@@ -18,13 +16,13 @@ $_custom_head .= '<script type="text/javascript" src="https://ajax.googleapis.co
 	    		
 	    <script type="text/javascript" src="'.$_base_path.'mods/chat_new/js/libraries/moment.min.js"></script>';
 
-$_custom_css = $_base_path.'mods/chat_new/module.css'; // use a custom stylesheet
+$_custom_css = $_base_path.'mods/chat_new/module.css';
 require (AT_INCLUDE_PATH.'header.inc.php');
 
 
 ?>
 
-	<div id="welcome" class="fl-container-flex90">
+	<div id="welcome" class="fl-container-flex90" style="display: none;">
 		Welcome to the new version of chat!<br/><br/>
 		
 		In order to login you need a free account on <a href="https://www.talkr.im/">talkr.im</a> server that is used by the chat. 
@@ -32,7 +30,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 		
 		It is highly recommended that you use the registered account only within the ATutor chat client to avoid loss of data or other undesirable consequences.<br/>
 		
-		Please see <a href="<?php echo $_base_path; ?>mods/chat_new/ATutor_XMPP_Chat_READ_ME.pdf" target="_blank">the helping document</a> for more details.
+		Please see <a href="<?php echo $_base_path; ?>mods/chat_new/ATutor_XMPP_Chat_READ_ME_2.0.pdf" target="_blank">the helping document</a> for more details.
 		
 		<table id="welcome_form">
 			<tr>
@@ -53,7 +51,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 	</div><!--end welcome-->
 	
 	
-	<div id="chat">
+	<div id="chat" style="display: none;">
 		<div id="<?php echo $_SESSION[course_id]; ?>"></div>
 		<div id="<?php echo $_SESSION[member_id]; ?>"></div>
 		<div class="fl-container-flex90 fl-left democ-linearize-sections ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabs">
@@ -76,7 +74,7 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			</div>
 		
 			<div id="tab_settings">
-			<?php require ('includes/settings.inc.php'); ?>
+			<?php require ('includes/help.inc.php'); ?>
 			</div>		
 		</div>  
 	</div><!--end chat-->
@@ -92,26 +90,43 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			This can take several seconds, please wait.
 		</p>
 	</div>
-	
 
-	<!--Peek XMPP console (comment to hide) -->
-	<!--<h4>Peek XMPP console</h4>
-	<div id="peek">
-		<div id='console'></div>
-		<textarea id='console_input' class='disabled' disabled='disabled'></textarea>
-		
-		<div id='buttonbar'>
-			<input id='send_button' type='button' value='Send Data' disabled='disabled' class='button' onclick="console_send();">
-			<input id='disconnect_button' type='button' value='Disconnect' disabled='disabled' class='button' onclick="console_disconnect();">
-		</div>
-	</div>-->
-	<!--end Peek XMPP console-->
+
+	<?php 
+	if ($XMPP_CONSOLE_ENABLED == 1) {
+		$console = "<h4>Peek XMPP console</h4>
+					<div id='peek'>
+						<div id='console'></div>
+						<textarea id='console_input' class='disabled' disabled='disabled'></textarea>
+						
+						<div id='buttonbar'>
+							<input id='send_button' type='button' value='Send Data' disabled='disabled' class='button' onclick='console_send();'>
+							<input id='disconnect_button' type='button' value='Disconnect' disabled='disabled' class='button' onclick='console_disconnect();'>
+						</div>
+					</div>";
+		echo $console;
+	}
+	?>
 	
 	
+	<!--hack to ensure all js was loaded-->	
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_client.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/xmpp_console.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/interface.js"></script>'; ?>
 	
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe_sha1.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/sha1.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe.muc.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/flXHR.js"></script>'; ?>
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/strophe&flXHR/strophe.flxhr.js"></script>'; ?>
+	
+	<?php echo '<script src="'.$_base_path.'mods/chat_new/js/libraries/moment.min.js"></script>'; ?>
 	
 	<script>
-	    jQuery("#tabs, #subtabs").tabs();
+		var ATUTOR_BASE_PATH = "<?php echo $_base_path; ?>".substring(1);
+		var CONNECTION_MANAGER = "<?php echo $BOSH_CONNECTION_MANAGER; ?>";
+		
+		jQuery("#tabs, #subtabs").tabs();
 	    
 	    jQuery('#subtabs').tabs({
 			select: function(event, ui){
@@ -128,28 +143,9 @@ require (AT_INCLUDE_PATH.'header.inc.php');
 			}
 		});
 		
-	    
-	    Interface.refresh_form();
-	    Interface.hide_div();
-	    
-	    Interface.load_inbox();
-	    
-//	     window.onbeforeunload = function(event)
-//    {
-//       alert('asasa');
-//    };
-
-//window.onbeforeunload = function (e) {
-//  e = e || window.event;
-//
-//  if (e) {
-//    alert('asasas');
-//  }
-//
-//  return 'Any string';
-//};
-
-	    
+		Interface.refresh_form();
+	    Interface.show_div();	    
+	    Interface.load_inbox();	
 	</script>
 
 <?php require (AT_INCLUDE_PATH.'footer.inc.php'); ?>
